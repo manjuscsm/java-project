@@ -1,0 +1,26 @@
+name: Deploy
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Deploy to EC2 on master branch push
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout the files
+        uses: actions/checkout@v2
+      - name: Deploy to Staging server
+        uses: easingthemes/ssh-deploy@main
+        env:
+         SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+         SOURCE: "/"
+         REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
+         REMOTE_USER: ${{ secrets.REMOTE_USER }}
+         TARGET: "/home/ec2-user"
+         SCRIPT_AFTER: |
+          whoami
+          ls -al
